@@ -1,0 +1,12 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4173:4173"
+    environment:
+      TRACKER_DB_PATH: /data/tracker.db
+    volumes:
+      - ./data:/data
+    restart: unless-stopped

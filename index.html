@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Print Market Tracker</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Farmers Market Inventory</p>
+          <h1>3D Print Sales Tracker</h1>
+          <p class="intro">
+            Tap an item card to record a sale instantly. The app tracks what sold,
+            how much it sold for, and how many are left.
+          </p>
+        </div>
+      </header>
+      <p class="status-message hidden" id="statusMessage" role="status" aria-live="polite"></p>
+
+      <main class="layout">
+        <section class="panel stats-panel">
+          <div class="panel-header">
+            <h2>Today at a Glance</h2>
+            <p>Inventory and revenue update every time you record a sale.</p>
+          </div>
+          <div class="stats-grid" id="statsGrid"></div>
+        </section>
+
+        <section class="panel inventory-panel">
+          <div class="panel-header">
+            <h2>Tap to Sell</h2>
+            <p>Tap the card for the default price or use custom sale if needed.</p>
+          </div>
+          <div class="inventory-grid" id="inventoryGrid"></div>
+          <div class="empty-state hidden" id="emptyState">
+            Add your first print below to start tracking sales.
+          </div>
+        </section>
+
+        <section class="panel form-panel">
+          <div class="panel-header">
+            <h2 id="formTitle">Add New Print</h2>
+            <p>Set the item name, default price, and starting quantity.</p>
+          </div>
+          <form id="itemForm" class="item-form">
+            <input id="itemId" type="hidden" />
+            <label>
+              Item Name
+              <input id="itemName" name="itemName" type="text" maxlength="60" required />
+            </label>
+            <div class="form-row">
+              <label>
+                Default Price
+                <input
+                  id="itemPrice"
+                  name="itemPrice"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  inputmode="decimal"
+                  required
+                />
+              </label>
+              <label>
+                Quantity
+                <input
+                  id="itemQuantity"
+                  name="itemQuantity"
+                  type="number"
+                  min="0"
+                  step="1"
+                  inputmode="numeric"
+                  required
+                />
+              </label>
+            </div>
+            <div class="form-actions">
+              <button class="primary-button" type="submit" id="saveItemButton">
+                Save Item
+              </button>
+              <button class="ghost-button hidden" type="button" id="cancelEditButton">
+                Cancel Edit
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel sales-panel">
+          <div class="panel-header">
+            <h2>Recent Sales</h2>
+            <p>Recent transactions are saved in SQLite and can be exported later.</p>
+          </div>
+          <div class="sales-actions">
+            <button class="secondary-button" id="undoSaleButton" type="button">
+              Undo Last Sale
+            </button>
+            <button class="secondary-button" id="exportSalesButton" type="button">
+              Export CSV
+            </button>
+          </div>
+          <div id="salesList" class="sales-list"></div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="priceDialog" class="price-dialog">
+      <form id="priceForm" class="price-form" method="dialog">
+        <h2>Custom Sale Price</h2>
+        <p id="priceDialogLabel"></p>
+        <label>
+          Sale Price
+          <input
+            id="customSalePrice"
+            name="customSalePrice"
+            type="number"
+            min="0"
+            step="0.01"
+            inputmode="decimal"
+            required
+          />
+        </label>
+        <div class="dialog-actions">
+          <button class="primary-button" type="submit">Record Sale</button>
+          <button class="ghost-button" type="button" id="closePriceDialogButton">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <template id="itemCardTemplate">
+      <article class="item-card">
+        <button class="sell-button" type="button"></button>
+        <div class="item-meta">
+          <div>
+            <h3 class="item-name"></h3>
+            <p class="item-price"></p>
+          </div>
+          <span class="stock-pill"></span>
+        </div>
+        <div class="item-footer">
+          <button class="custom-button" type="button">Custom Sale</button>
+          <button class="edit-button" type="button">Edit</button>
+          <button class="delete-button" type="button">Delete</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
