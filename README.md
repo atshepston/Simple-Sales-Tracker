@@ -20,8 +20,10 @@ The SQLite database is stored in `./data/tracker.db` via a bind mount, so you ca
 
 ## What it does
 
-- Tap an item card to record a sale at the default price
-- Use custom sale when you need a different sale price
+- Tap an item card to add it to a cart, then check out the full order
+- Search prints by name while selling
+- Upload an image for each print
+- Use custom pricing when you need a different line-item price
 - Track remaining quantity, units sold, and revenue
 - Add, edit, delete, and restock inventory
 - Keep inventory and sales persisted in SQLite

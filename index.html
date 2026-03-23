@@ -17,6 +17,9 @@
             how much it sold for, and how many are left.
           </p>
         </div>
+        <button class="theme-toggle" id="themeToggleButton" type="button" aria-pressed="false">
+          <span class="theme-toggle-label">Dark Mode</span>
+        </button>
       </header>
       <p class="status-message hidden" id="statusMessage" role="status" aria-live="polite"></p>
 
@@ -29,11 +32,47 @@
           <div class="stats-grid" id="statsGrid"></div>
         </section>
 
+        <section class="panel cart-panel">
+          <div class="panel-header">
+            <h2>Cart</h2>
+            <p>Build the customer order here before checkout.</p>
+          </div>
+          <div id="cartList" class="cart-list"></div>
+          <div class="cart-summary">
+            <div>
+              <span class="stat-label">Items</span>
+              <strong class="cart-summary-value" id="cartCount">0</strong>
+            </div>
+            <div>
+              <span class="stat-label">Total</span>
+              <strong class="cart-summary-value" id="cartTotal">$0.00</strong>
+            </div>
+          </div>
+          <div class="sales-actions">
+            <button class="ghost-button" id="clearCartButton" type="button">
+              Clear Cart
+            </button>
+            <button class="primary-button" id="checkoutButton" type="button">
+              Checkout
+            </button>
+          </div>
+        </section>
+
         <section class="panel inventory-panel">
           <div class="panel-header">
-            <h2>Tap to Sell</h2>
-            <p>Tap the card for the default price or use custom sale if needed.</p>
+            <h2>Add to Cart</h2>
+            <p>Tap a card to add one item to the cart, then check out the whole order.</p>
           </div>
+          <label class="search-label" for="searchInput">
+            Search Prints
+            <input
+              id="searchInput"
+              name="searchInput"
+              type="search"
+              placeholder="Find a print by name"
+              autocomplete="off"
+            />
+          </label>
           <div class="inventory-grid" id="inventoryGrid"></div>
           <div class="empty-state hidden" id="emptyState">
             Add your first print below to start tracking sales.
@@ -77,6 +116,15 @@
                 />
               </label>
             </div>
+            <label>
+              Print Image
+              <input id="itemImage" name="itemImage" type="file" accept="image/*" />
+            </label>
+            <p class="field-help" id="imageHelpText">Optional. Upload a JPG, PNG, WebP, or GIF.</p>
+            <label class="checkbox-label">
+              <input id="removeImage" name="removeImage" type="checkbox" disabled />
+              Remove current image
+            </label>
             <div class="form-actions">
               <button class="primary-button" type="submit" id="saveItemButton">
                 Save Item
@@ -108,10 +156,10 @@
 
     <dialog id="priceDialog" class="price-dialog">
       <form id="priceForm" class="price-form" method="dialog">
-        <h2>Custom Sale Price</h2>
+        <h2>Custom Cart Price</h2>
         <p id="priceDialogLabel"></p>
         <label>
-          Sale Price
+          Unit Price
           <input
             id="customSalePrice"
             name="customSalePrice"
@@ -123,7 +171,7 @@
           />
         </label>
         <div class="dialog-actions">
-          <button class="primary-button" type="submit">Record Sale</button>
+          <button class="primary-button" type="submit">Add to Cart</button>
           <button class="ghost-button" type="button" id="closePriceDialogButton">
             Cancel
           </button>
@@ -133,6 +181,10 @@
 
     <template id="itemCardTemplate">
       <article class="item-card">
+        <div class="image-frame">
+          <img class="item-image hidden" alt="" />
+          <div class="image-placeholder">No image</div>
+        </div>
         <button class="sell-button" type="button"></button>
         <div class="item-meta">
           <div>
@@ -142,9 +194,25 @@
           <span class="stock-pill"></span>
         </div>
         <div class="item-footer">
-          <button class="custom-button" type="button">Custom Sale</button>
+          <button class="custom-button" type="button">Custom Price</button>
           <button class="edit-button" type="button">Edit</button>
           <button class="delete-button" type="button">Delete</button>
+        </div>
+      </article>
+    </template>
+
+    <template id="cartItemTemplate">
+      <article class="cart-item">
+        <div>
+          <strong class="cart-item-name"></strong>
+          <p class="cart-item-meta"></p>
+        </div>
+        <div class="cart-item-actions">
+          <button class="ghost-button cart-stepper" type="button" data-action="decrement">-</button>
+          <span class="cart-qty"></span>
+          <button class="ghost-button cart-stepper" type="button" data-action="increment">+</button>
+          <button class="ghost-button cart-price-button" type="button">Price</button>
+          <button class="delete-button cart-remove-button" type="button">Remove</button>
         </div>
       </article>
     </template>
