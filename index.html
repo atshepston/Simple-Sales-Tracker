@@ -32,32 +32,6 @@
           <div class="stats-grid" id="statsGrid"></div>
         </section>
 
-        <section class="panel cart-panel">
-          <div class="panel-header">
-            <h2>Cart</h2>
-            <p>Build the customer order here before checkout.</p>
-          </div>
-          <div id="cartList" class="cart-list"></div>
-          <div class="cart-summary">
-            <div>
-              <span class="stat-label">Items</span>
-              <strong class="cart-summary-value" id="cartCount">0</strong>
-            </div>
-            <div>
-              <span class="stat-label">Total</span>
-              <strong class="cart-summary-value" id="cartTotal">$0.00</strong>
-            </div>
-          </div>
-          <div class="sales-actions">
-            <button class="ghost-button" id="clearCartButton" type="button">
-              Clear Cart
-            </button>
-            <button class="primary-button" id="checkoutButton" type="button">
-              Checkout
-            </button>
-          </div>
-        </section>
-
         <section class="panel inventory-panel">
           <div class="panel-header">
             <h2>Add to Cart</h2>
@@ -79,88 +53,116 @@
           </div>
         </section>
 
-        <section class="panel form-panel">
-          <div class="panel-header">
-            <h2 id="formTitle">Add New Print</h2>
-            <p>Set the item name, default price, and starting quantity.</p>
-          </div>
-          <form id="itemForm" class="item-form">
-            <input id="itemId" type="hidden" />
-            <label>
-              Item Name
-              <input id="itemName" name="itemName" type="text" maxlength="60" required />
-            </label>
-            <div class="form-row">
-              <label>
-                Default Price
-                <input
-                  id="itemPrice"
-                  name="itemPrice"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  inputmode="decimal"
-                  required
-                />
-              </label>
-              <label>
-                Quantity
-                <input
-                  id="itemQuantity"
-                  name="itemQuantity"
-                  type="number"
-                  min="0"
-                  step="1"
-                  inputmode="numeric"
-                  required
-                />
-              </label>
+        <div class="sidebar-stack">
+          <section class="panel cart-panel">
+            <div class="panel-header">
+              <h2>Cart</h2>
+              <p>Build the customer order here before checkout.</p>
             </div>
-            <label>
-              Print Image
-              <input id="itemImage" name="itemImage" type="file" accept="image/*" />
-            </label>
-            <div class="paste-zone" id="pasteZone" tabindex="0">
-              <strong>Paste Image</strong>
-              <p class="field-help" id="pasteHelpText">
-                Click here and press `Cmd+V` or `Ctrl+V` to paste an image from your clipboard.
-              </p>
+            <div id="cartList" class="cart-list"></div>
+            <div class="cart-summary">
+              <div>
+                <span class="stat-label">Items</span>
+                <strong class="cart-summary-value" id="cartCount">0</strong>
+              </div>
+              <div>
+                <span class="stat-label">Total</span>
+                <strong class="cart-summary-value" id="cartTotal">$0.00</strong>
+              </div>
             </div>
-            <div class="image-preview hidden" id="imagePreview">
-              <img id="imagePreviewImg" alt="Selected print image preview" />
-              <button class="ghost-button" id="clearImageButton" type="button">Clear New Image</button>
-            </div>
-            <p class="field-help" id="imageHelpText">Optional. Upload a JPG, PNG, WebP, or GIF.</p>
-            <label class="checkbox-label">
-              <input id="removeImage" name="removeImage" type="checkbox" disabled />
-              Remove current image
-            </label>
-            <div class="form-actions">
-              <button class="primary-button" type="submit" id="saveItemButton">
-                Save Item
+            <div class="sales-actions">
+              <button class="ghost-button" id="clearCartButton" type="button">
+                Clear Cart
               </button>
-              <button class="ghost-button hidden" type="button" id="cancelEditButton">
-                Cancel Edit
+              <button class="primary-button" id="checkoutButton" type="button">
+                Checkout
               </button>
             </div>
-          </form>
-        </section>
+          </section>
 
-        <section class="panel sales-panel">
-          <div class="panel-header">
-            <h2>Recent Sales</h2>
-            <p>Recent transactions are saved in SQLite and can be exported later.</p>
-          </div>
-          <div class="sales-actions">
-            <button class="secondary-button" id="undoSaleButton" type="button">
-              Undo Last Sale
-            </button>
-            <button class="secondary-button" id="exportSalesButton" type="button">
-              Export CSV
-            </button>
-          </div>
-          <div id="salesList" class="sales-list"></div>
-        </section>
+          <section class="panel form-panel">
+            <div class="panel-header">
+              <h2 id="formTitle">Add New Print</h2>
+              <p>Set the item name, default price, and starting quantity.</p>
+            </div>
+            <form id="itemForm" class="item-form">
+              <input id="itemId" type="hidden" />
+              <label>
+                Item Name
+                <input id="itemName" name="itemName" type="text" maxlength="60" required />
+              </label>
+              <div class="form-row">
+                <label>
+                  Default Price
+                  <input
+                    id="itemPrice"
+                    name="itemPrice"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    inputmode="decimal"
+                    required
+                  />
+                </label>
+                <label>
+                  Quantity
+                  <input
+                    id="itemQuantity"
+                    name="itemQuantity"
+                    type="number"
+                    min="0"
+                    step="1"
+                    inputmode="numeric"
+                    required
+                  />
+                </label>
+              </div>
+              <label>
+                Print Image
+                <input id="itemImage" name="itemImage" type="file" accept="image/*" />
+              </label>
+              <div class="paste-zone" id="pasteZone" tabindex="0">
+                <strong>Paste Image</strong>
+                <p class="field-help" id="pasteHelpText">
+                  Click here and press `Cmd+V` or `Ctrl+V` to paste an image from your clipboard.
+                </p>
+              </div>
+              <div class="image-preview hidden" id="imagePreview">
+                <img id="imagePreviewImg" alt="Selected print image preview" />
+                <button class="ghost-button" id="clearImageButton" type="button">Clear New Image</button>
+              </div>
+              <p class="field-help" id="imageHelpText">Optional. Upload a JPG, PNG, WebP, or GIF.</p>
+              <label class="checkbox-label">
+                <input id="removeImage" name="removeImage" type="checkbox" disabled />
+                Remove current image
+              </label>
+              <div class="form-actions">
+                <button class="primary-button" type="submit" id="saveItemButton">
+                  Save Item
+                </button>
+                <button class="ghost-button hidden" type="button" id="cancelEditButton">
+                  Cancel Edit
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section class="panel sales-panel">
+            <div class="panel-header">
+              <h2>Recent Sales</h2>
+              <p>Recent transactions are saved in SQLite and can be exported later.</p>
+            </div>
+            <div class="sales-actions">
+              <button class="secondary-button" id="undoSaleButton" type="button">
+                Undo Last Sale
+              </button>
+              <button class="secondary-button" id="exportSalesButton" type="button">
+                Export CSV
+              </button>
+            </div>
+            <div id="salesList" class="sales-list"></div>
+          </section>
+        </div>
       </main>
     </div>
 

@@ -134,6 +134,7 @@ h1 {
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
   gap: 1rem;
+  align-items: start;
 }
 
 .panel {
@@ -150,10 +151,11 @@ h1 {
   grid-column: 1;
 }
 
-.form-panel,
-.cart-panel,
-.sales-panel {
+.sidebar-stack {
   grid-column: 2;
+  display: grid;
+  gap: 1rem;
+  align-content: start;
 }
 
 .panel-header {
@@ -545,9 +547,7 @@ input {
 
   .stats-panel,
   .inventory-panel,
-  .form-panel,
-  .cart-panel,
-  .sales-panel {
+  .sidebar-stack {
     grid-column: auto;
   }
 
