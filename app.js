@@ -408,11 +408,16 @@ function renderStats() {
   const revenue = state.sales.reduce((sum, sale) => sum + sale.price, 0);
   const unitsSold = state.sales.length;
   const itemsInStock = state.items.reduce((sum, item) => sum + item.quantity, 0);
+  const potentialRevenue = state.items.reduce(
+    (sum, item) => sum + item.quantity * item.price,
+    0
+  );
   const lowStock = state.items.filter((item) => item.quantity > 0 && item.quantity <= 2).length;
   const stats = [
     { label: "Revenue", value: formatCurrency(revenue) },
     { label: "Units Sold", value: String(unitsSold) },
     { label: "Items Left", value: String(itemsInStock) },
+    { label: "Potential Revenue", value: formatCurrency(potentialRevenue) },
     { label: "Low Stock", value: String(lowStock) },
   ];
 
