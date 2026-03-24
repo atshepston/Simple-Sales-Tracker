@@ -120,6 +120,16 @@
               Print Image
               <input id="itemImage" name="itemImage" type="file" accept="image/*" />
             </label>
+            <div class="paste-zone" id="pasteZone" tabindex="0">
+              <strong>Paste Image</strong>
+              <p class="field-help" id="pasteHelpText">
+                Click here and press `Cmd+V` or `Ctrl+V` to paste an image from your clipboard.
+              </p>
+            </div>
+            <div class="image-preview hidden" id="imagePreview">
+              <img id="imagePreviewImg" alt="Selected print image preview" />
+              <button class="ghost-button" id="clearImageButton" type="button">Clear New Image</button>
+            </div>
             <p class="field-help" id="imageHelpText">Optional. Upload a JPG, PNG, WebP, or GIF.</p>
             <label class="checkbox-label">
               <input id="removeImage" name="removeImage" type="checkbox" disabled />

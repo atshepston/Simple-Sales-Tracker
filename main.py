@@ -81,6 +81,7 @@ def init_db() -> None:
             """
         )
         ensure_item_column(connection, "image_path", "TEXT")
+        ensure_item_column(connection, "source_url", "TEXT")
         connection.commit()
 
     seed_demo_data_if_empty()
@@ -102,8 +103,8 @@ def seed_demo_data_if_empty() -> None:
         for item in DEMO_ITEMS:
             connection.execute(
                 """
-                INSERT INTO items (id, name, price, quantity, starting_quantity, image_path)
-                VALUES (?, ?, ?, ?, ?, NULL)
+                INSERT INTO items (id, name, price, quantity, starting_quantity, image_path, source_url)
+                VALUES (?, ?, ?, ?, ?, NULL, NULL)
                 """,
                 (str(uuid4()), item["name"], item["price"], item["quantity"], item["quantity"]),
             )
@@ -156,10 +157,10 @@ async def create_item(
     with closing(get_connection()) as connection:
         connection.execute(
             """
-            INSERT INTO items (id, name, price, quantity, starting_quantity, image_path)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO items (id, name, price, quantity, starting_quantity, image_path, source_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
-            (str(uuid4()), clean_name, price, quantity, quantity, image_path),
+            (str(uuid4()), clean_name, price, quantity, quantity, image_path, None),
         )
         connection.commit()
 
@@ -184,6 +185,7 @@ async def update_item(
             SELECT
                 items.id,
                 items.image_path,
+                items.source_url,
                 COALESCE(sales_summary.sold_count, 0) AS sold_count
             FROM items
             LEFT JOIN (
@@ -213,10 +215,10 @@ async def update_item(
         connection.execute(
             """
             UPDATE items
-            SET name = ?, price = ?, quantity = ?, starting_quantity = ?, image_path = ?
+            SET name = ?, price = ?, quantity = ?, starting_quantity = ?, image_path = ?, source_url = ?
             WHERE id = ?
             """,
-            (clean_name, price, quantity, starting_quantity, next_image_path, item_id),
+            (clean_name, price, quantity, starting_quantity, next_image_path, item["source_url"], item_id),
         )
         connection.commit()
 
@@ -396,6 +398,7 @@ def load_snapshot() -> dict[str, Any]:
                 items.quantity,
                 items.starting_quantity,
                 items.image_path,
+                items.source_url,
                 COALESCE(sales_summary.sold_count, 0) AS sold_count
             FROM items
             LEFT JOIN (

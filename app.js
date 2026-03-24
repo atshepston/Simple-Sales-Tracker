@@ -26,6 +26,11 @@ const itemQuantityInput = document.querySelector("#itemQuantity");
 const itemImageInput = document.querySelector("#itemImage");
 const removeImageInput = document.querySelector("#removeImage");
 const imageHelpText = document.querySelector("#imageHelpText");
+const pasteZone = document.querySelector("#pasteZone");
+const pasteHelpText = document.querySelector("#pasteHelpText");
+const imagePreview = document.querySelector("#imagePreview");
+const imagePreviewImg = document.querySelector("#imagePreviewImg");
+const clearImageButton = document.querySelector("#clearImageButton");
 const searchInput = document.querySelector("#searchInput");
 const cancelEditButton = document.querySelector("#cancelEditButton");
 const undoSaleButton = document.querySelector("#undoSaleButton");
@@ -43,6 +48,8 @@ const cartItemTemplate = document.querySelector("#cartItemTemplate");
 const statusMessage = document.querySelector("#statusMessage");
 
 let customSaleItemId = null;
+let pendingImageFile = null;
+let pendingImageUrl = null;
 
 applyTheme(state.theme);
 render();
@@ -65,8 +72,9 @@ itemForm.addEventListener("submit", async (event) => {
   formData.append("quantity", String(quantity));
 
   const selectedImage = itemImageInput.files[0];
-  if (selectedImage) {
-    formData.append("image", selectedImage);
+  const imageToSubmit = selectedImage || pendingImageFile;
+  if (imageToSubmit) {
+    formData.append("image", imageToSubmit);
   }
 
   if (itemIdInput.value && removeImageInput.checked) {
@@ -83,6 +91,41 @@ itemForm.addEventListener("submit", async (event) => {
 });
 
 cancelEditButton.addEventListener("click", resetForm);
+
+itemImageInput.addEventListener("change", () => {
+  const selectedImage = itemImageInput.files[0] || null;
+  if (!selectedImage) {
+    clearPendingImagePreview();
+    return;
+  }
+
+  setPendingImage(selectedImage, `Selected file: ${selectedImage.name}`);
+});
+
+pasteZone.addEventListener("paste", (event) => {
+  const clipboardItems = Array.from(event.clipboardData?.items || []);
+  const imageItem = clipboardItems.find((item) => item.type.startsWith("image/"));
+  if (!imageItem) {
+    showStatus("Clipboard does not contain an image.");
+    return;
+  }
+
+  const file = imageItem.getAsFile();
+  if (!file) {
+    showStatus("Could not read the pasted image.");
+    return;
+  }
+
+  const extension = file.type.split("/")[1] || "png";
+  const pastedFile = new File([file], `pasted-image.${extension}`, { type: file.type });
+  setPendingImage(pastedFile, "Pasted image ready to save.");
+  clearStatus();
+  event.preventDefault();
+});
+
+clearImageButton.addEventListener("click", () => {
+  clearPendingImagePreview();
+});
 
 searchInput.addEventListener("input", (event) => {
   state.searchTerm = event.target.value.trim().toLowerCase();
@@ -175,7 +218,7 @@ async function syncWithServer(url, options) {
     }
 
     const response = await fetch(url, requestOptions);
-    const payload = await response.json();
+    const payload = await parseApiResponse(response);
 
     if (!response.ok) {
       throw new Error(payload.detail || "Request failed");
@@ -193,6 +236,16 @@ async function syncWithServer(url, options) {
     showStatus(error.message || "Something went wrong while talking to the server.");
     return false;
   }
+}
+
+async function parseApiResponse(response) {
+  const contentType = response.headers.get("content-type") || "";
+  if (contentType.includes("application/json")) {
+    return await response.json();
+  }
+
+  const text = await response.text();
+  return { detail: text || "Unexpected server response" };
 }
 
 function addToCart(itemId, unitPrice = null) {
@@ -267,6 +320,7 @@ function startEdit(itemId) {
   itemQuantityInput.value = item.quantity;
   removeImageInput.checked = false;
   removeImageInput.disabled = !item.imageUrl;
+  clearPendingImagePreview();
   imageHelpText.textContent = item.imageUrl
     ? "Leave the file empty to keep the current image, or upload a new one to replace it."
     : "Optional. Upload a JPG, PNG, WebP, or GIF.";
@@ -280,6 +334,7 @@ function resetForm() {
   itemIdInput.value = "";
   formTitle.textContent = "Add New Print";
   cancelEditButton.classList.add("hidden");
+  clearPendingImagePreview();
   removeImageInput.checked = false;
   removeImageInput.disabled = true;
   imageHelpText.textContent = "Optional. Upload a JPG, PNG, WebP, or GIF.";
@@ -552,6 +607,33 @@ function pruneCartToStock() {
   }
 
   state.cart = nextCart;
+}
+
+function setPendingImage(file, helpText) {
+  clearPendingImagePreview(false);
+  pendingImageFile = file;
+  pendingImageUrl = URL.createObjectURL(file);
+  imagePreviewImg.src = pendingImageUrl;
+  imagePreview.classList.remove("hidden");
+  pasteHelpText.textContent = helpText;
+}
+
+function clearPendingImagePreview(resetInput = true) {
+  pendingImageFile = null;
+  if (pendingImageUrl) {
+    if (pendingImageUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(pendingImageUrl);
+    }
+    pendingImageUrl = null;
+  }
+
+  imagePreviewImg.removeAttribute("src");
+  imagePreview.classList.add("hidden");
+  pasteHelpText.textContent = "Click here and press `Cmd+V` or `Ctrl+V` to paste an image from your clipboard.";
+
+  if (resetInput) {
+    itemImageInput.value = "";
+  }
 }
 
 function showStatus(message) {

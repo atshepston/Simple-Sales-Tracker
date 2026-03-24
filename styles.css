@@ -376,6 +376,38 @@ label {
   color: var(--muted);
 }
 
+.paste-zone {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.95rem;
+  border-radius: 16px;
+  border: 1px dashed var(--line);
+  background: rgba(123, 77, 203, 0.05);
+  cursor: text;
+}
+
+.paste-zone:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.image-preview {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: rgba(123, 77, 203, 0.05);
+}
+
+.image-preview img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+}
+
 input {
   width: 100%;
   padding: 0.85rem 0.95rem;
